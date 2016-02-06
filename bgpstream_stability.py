@@ -28,7 +28,6 @@ from collections import defaultdict
 
 updates = defaultdict(lambda : defaultdict(int))
 ​
-
 # create a new bgpstream instance
 stream = BGPStream()
 
