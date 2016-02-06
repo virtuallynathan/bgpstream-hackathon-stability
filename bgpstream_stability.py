@@ -45,7 +45,8 @@ stream.add_interval_filter(1454284800,1454285700)
 # start the stream
 stream.start()
 
-count = 0
+updateCount = 0
+prefixCount = 0
 # print the stream
 while(stream.get_next_record(rec)):
     #print rec.status, rec.project +"."+ rec.collector, rec.time
@@ -77,9 +78,10 @@ while(stream.get_next_record(rec)):
 
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
-	count += 1
+	updateCount += 1
 
 print count
 
 for key, value in updates.iteritems():
+    prefixCount += 1
     print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawls: " + str(value["W"])
