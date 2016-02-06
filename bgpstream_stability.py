@@ -82,4 +82,4 @@ while(stream.get_next_record(rec)):
 print count
 
 for key, value in f.iteritems():
-    print "Prefix: " + `key + " Announce: " + str(value["A"]) + " Withdrawl: " + str(value["W"])
+    print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawl: " + str(value["W"])
