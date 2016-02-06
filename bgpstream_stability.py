@@ -22,9 +22,58 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import json
+import requests
+import multiprocessing
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
 
+
+def get_ripe_probes(prefix_list):
+
+	def get_probe_list(ip_proto, prefix, return_dict):
+
+		url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" %(ip_proto, prefix)
+		probe_data = requests.get(url).json()
+
+		probe_count = probe_data["meta"]["total_count"]
+
+		probe_ids = []
+		if probe_count > 0:
+			for probe in probe_data["objects"]:
+
+				probe_id = probe["id"]
+				probe_ids.append(probe_id)
+
+		return_dict[prefix] = {"probe_count": probe_count, "probe_ids": probe_ids}
+		return
+
+
+	jobs = []
+	manager = multiprocessing.Manager()
+	return_dict = manager.dict()
+
+	for prefix, count in prefix_list.iteritems():
+		prefix = prefix.strip()
+
+		if "." in prefix:
+
+			job = multiprocessing.Process(target=get_probe_list, args=("v4", prefix, return_dict))
+
+		elif ":" in prefix:
+
+			job = multiprocessing.Process(target=get_probe_list, args=("v6", prefix, return_dict))
+
+		jobs.append(job)
+		job.start()
+				
+
+	for job in jobs:
+		job.join()
+
+	#print json.dumps(dict(return_dict), indent=4)
+	return dict(return_dict)
+	
 
 updates = defaultdict(int)
 
