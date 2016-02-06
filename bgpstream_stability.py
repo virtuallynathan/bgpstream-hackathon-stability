@@ -74,11 +74,12 @@ while(stream.get_next_record(rec)):
 	updateCount += 1
 
 
-for key, value in updates.iteritems():
-    prefixCount += 1
-    print "Prefix: " + key + " Updates: " + str(value)
+topN = 10
 
 for w in sorted(updates, key=updates.get, reverse=True):
+  num += 1
+  if num == topN:
+      break
   print w, updates[w]
 
 print "Updates: " + str(updateCount)
