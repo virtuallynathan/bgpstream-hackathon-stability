@@ -29,13 +29,7 @@ from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
 from netaddr import IPNetwork, IPAddress
 
-with open('hitlist.txt') as f:
-    hitlist = f.readlines()
-
-
-
 updates = defaultdict(int)
-
 # create a new bgpstream instance
 stream = BGPStream()
 
@@ -84,13 +78,6 @@ while(stream.get_next_record(rec)):
 probeList = get_ripe_probes(updates)
 print json.dumps(probeList, indent=4)
 
-
-def get_hitlist_ips(prefix_list):
-# for each prefix (dict - prefix:count), check if any IP from the hitlist is in the prefix. Return a dict of prefix:list of stable IPs
-for line in hitlist:
-    #check if anything from the
-    if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
-
 topN = 10
 num = 0
 
@@ -102,6 +89,15 @@ for w in sorted(updates, key=updates.get, reverse=True):
 
 print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
+
+# Helper functions
+with open('hitlist.txt') as f:
+    hitlist = f.readlines()
+def get_hitlist_ips(prefix_list):
+# for each prefix (dict - prefix:count), check if any IP from the hitlist is in the prefix. Return a dict of prefix:list of stable IPs
+    for line in hitlist:
+        #check if anything from the
+        if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
 
 
 def get_ripe_probes(prefix_list):
