@@ -82,4 +82,4 @@ while(stream.get_next_record(rec)):
 print count
 
 for key, value in updates.iteritems():
-    print "Prefix: " + key + " Announce: " + str(value["A"]) + " Fail: " + str(value["W"])
+    print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawls: " + str(value["W"])
