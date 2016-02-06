@@ -66,7 +66,7 @@ while(stream.get_next_record(rec)):
         if not currCount:
             currCount = empty
         #if we have a success, increment the succcess counter (0)
-        if status == "A":
+        if elem.type == "A":
             currCount[status] += 1
             updates[prefix] = currCount
         #else, we have a failue, increment that counter (1)
