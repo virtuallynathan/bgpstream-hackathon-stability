@@ -63,7 +63,7 @@ while(stream.get_next_record(rec)):
         #prepare the empty list for new date values [successCt,failCt]
         empty =  {"A": 0, "W": 0}
         # if the date doesn't have a count, set it to empty
-        if elem.type == "A" || elem.type == "W"
+        if elem.type == "A" or elem.type == "W"
             if not currCount:
                 currCount = empty
             #if we have a success, increment the succcess counter (0)
