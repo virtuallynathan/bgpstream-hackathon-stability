@@ -75,6 +75,7 @@ while(stream.get_next_record(rec)):
 
 
 topN = 10
+num = 0
 
 for w in sorted(updates, key=updates.get, reverse=True):
   num += 1
