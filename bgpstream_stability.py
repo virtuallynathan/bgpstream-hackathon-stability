@@ -44,7 +44,7 @@ stream.start()
 count = 0
 # print the stream
 while(stream.get_next_record(rec)):
-    print rec.status, rec.project +"."+ rec.collector, rec.time
+    #print rec.status, rec.project +"."+ rec.collector, rec.time
     elem = rec.get_next_elem()
     while(elem):
         # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type, elem.fields
