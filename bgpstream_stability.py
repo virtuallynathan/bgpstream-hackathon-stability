@@ -48,10 +48,10 @@ while(stream.get_next_record(rec)):
     elem = rec.get_next_elem()
     while(elem):
         # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type, elem.fields
-        communities = elem.fields.get("communities", default="")
-        nextHop = elem.fields.get("next-hop", default="")
-        prefix = elem.fields.get("prefix", default="")
-        asPath = elem.fields.get("as-path", default="")
+        communities = elem.fields.get("communities", "")
+        nextHop = elem.fields.get("next-hop", "")
+        prefix = elem.fields.get("prefix", "")
+        asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
         print asPath
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
