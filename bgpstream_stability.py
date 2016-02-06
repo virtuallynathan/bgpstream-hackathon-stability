@@ -80,8 +80,10 @@ while(stream.get_next_record(rec)):
         elem = rec.get_next_elem()
 	updateCount += 1
 
-print count
 
 for key, value in updates.iteritems():
     prefixCount += 1
     print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawls: " + str(value["W"])
+
+print "Updates: " + updateCount
+print "Prefixes: " + prefixCount
