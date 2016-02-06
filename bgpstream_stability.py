@@ -78,5 +78,8 @@ for key, value in updates.iteritems():
     prefixCount += 1
     print "Prefix: " + key + " Updates: " + str(value)
 
+for w in sorted(updates, key=updates.get, reverse=True):
+  print w, updates[w]
+
 print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
