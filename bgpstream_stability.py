@@ -63,16 +63,17 @@ while(stream.get_next_record(rec)):
         #prepare the empty list for new date values [successCt,failCt]
         empty =  {"A": 0, "W": 0}
         # if the date doesn't have a count, set it to empty
-        if not currCount:
-            currCount = empty
-        #if we have a success, increment the succcess counter (0)
-        if elem.type == "A":
-            currCount[elem.type] += 1
-            updates[prefix] = currCount
-        #else, we have a failue, increment that counter (1)
-        else:
-            currCount[elem.type] += 1
-            updates[prefix] = currCount
+        if elem.type == "A" || elem.type == "W"
+            if not currCount:
+                currCount = empty
+            #if we have a success, increment the succcess counter (0)
+            if elem.type == "A":
+                currCount[elem.type] += 1
+                updates[prefix] = currCount
+            #else, we have a failue, increment that counter (1)
+            else:
+                currCount[elem.type] += 1
+                updates[prefix] = currCount
 
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
