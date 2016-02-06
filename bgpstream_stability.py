@@ -66,14 +66,14 @@ def get_ripe_probes(prefix_list):
 
 		jobs.append(job)
 		job.start()
-				
+
 
 	for job in jobs:
 		job.join()
 
 	#print json.dumps(dict(return_dict), indent=4)
 	return dict(return_dict)
-	
+
 
 updates = defaultdict(int)
 
@@ -122,6 +122,8 @@ while(stream.get_next_record(rec)):
         elem = rec.get_next_elem()
 	updateCount += 1
 
+probeList = get_ripe_probes(updates)
+print json.dumps(probeList, indent=4)
 
 topN = 10
 num = 0
