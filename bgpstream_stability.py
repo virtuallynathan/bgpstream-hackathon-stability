@@ -28,6 +28,13 @@ import multiprocessing
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
 from netaddr import IPNetwork, IPAddress
+from datetime import datetime
+from ripe.atlas.cousteau import (
+  Ping,
+  Traceroute,
+  AtlasSource,
+  AtlasCreateRequest
+)
 
 updates = defaultdict(int)
 # create a new bgpstream instance
@@ -98,6 +105,7 @@ def get_hitlist_ips(prefix_list):
     for line in hitlist:
         #check if anything from the
         if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
+            #add to list
 
 
 def get_ripe_probes(prefix_list):
@@ -144,3 +152,38 @@ def get_ripe_probes(prefix_list):
 
 	#print json.dumps(dict(return_dict), indent=4)
 	return dict(return_dict)
+
+def create_ripe_measurement(prefix_list):
+    measurement_count = 0
+    measurement_limit = 10
+    ATLAS_API_KEY = "secret"
+    for prefix, ip_list in prefix_list.iteritems():
+        for ip in ip_list:
+
+            ipAddr = ip
+            count = 0
+            descr = "Prefix: " + prefix + "Flapped " + str(count) + " times"
+
+            ping = Ping(af=4, target=ipAddr, description=descr)
+
+            traceroute = Traceroute(
+                af=4,
+                target=ipAddr,
+                description=descr,
+                protocol="ICMP",
+            )
+
+            source = AtlasSource(type="area", value="WW", requested=5)
+
+            atlas_request = AtlasCreateRequest(
+                start_time=datetime.utcnow(),
+                key=ATLAS_API_KEY,
+                measurements=[ping, traceroute],
+                sources=[source],
+                is_oneoff=True
+            )
+
+            (is_success, response) = atlas_request.create()
+            measurement_count += 1
+            if measurement_count > measurement_limit:
+                break
