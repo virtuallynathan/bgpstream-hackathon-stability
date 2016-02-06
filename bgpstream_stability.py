@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # This file is part of pybgpstream
 #
@@ -21,12 +20,14 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
 
+
 updates = defaultdict(lambda : defaultdict(int))
-​
+
 # create a new bgpstream instance
 stream = BGPStream()
 
@@ -80,4 +81,4 @@ while(stream.get_next_record(rec)):
 print count
 
 for key, value in f.iteritems():
-    print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawl: " + str(value["W"])
+    print "Prefix: " + key + " Announce: " + str(value["A"]) + " Fail: " + str(value["W"])
