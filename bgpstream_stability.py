@@ -26,7 +26,7 @@ from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
 
 
-updates = defaultdict(lambda : defaultdict(int))
+updates = defaultdict(int)
 
 # create a new bgpstream instance
 stream = BGPStream()
@@ -62,19 +62,12 @@ while(stream.get_next_record(rec)):
         # see what we have for that date already
         currCount = updates.get(prefix)
         #prepare the empty list for new date values [successCt,failCt]
-        empty =  {"A": 0, "W": 0}
-        # if the date doesn't have a count, set it to empty
-        if elem.type == "A" or elem.type == "W":
-            if not currCount:
-                currCount = empty
-            #if we have a success, increment the succcess counter (0)
-            if elem.type == "A":
-                currCount[elem.type] += 1
-                updates[prefix] = currCount
-            #else, we have a failue, increment that counter (1)
-            else:
-                currCount[elem.type] += 1
-                updates[prefix] = currCount
+
+        if not currCount:
+            currCount = 0
+        #if we have a success, increment the succcess counter (0)
+        currCount += 1
+        updates[prefix] = currCount
 
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
@@ -83,7 +76,7 @@ while(stream.get_next_record(rec)):
 
 for key, value in updates.iteritems():
     prefixCount += 1
-    print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawls: " + str(value["W"])
+    print "Prefix: " + key + " Updates: " + str(value)
 
 print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
