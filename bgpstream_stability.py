@@ -85,5 +85,5 @@ for key, value in updates.iteritems():
     prefixCount += 1
     print "Prefix: " + key + " Announce: " + str(value["A"]) + " Withdrawls: " + str(value["W"])
 
-print "Updates: " + updateCount
-print "Prefixes: " + prefixCount
+print "Updates: " + str(updateCount)
+print "Prefixes: " + str(prefixCount)
