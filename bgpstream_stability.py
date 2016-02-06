@@ -23,6 +23,11 @@
 #
 
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
+from collections import defaultdict
+
+
+updates = defaultdict(lambda : defaultdict(int))
+​
 
 # create a new bgpstream instance
 stream = BGPStream()
@@ -54,8 +59,27 @@ while(stream.get_next_record(rec)):
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
         print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
+        # see what we have for that date already
+        currCount = f.get(prefix)
+        #prepare the empty list for new date values [successCt,failCt]
+        empty =  {"A": 0, "W": 0}
+        # if the date doesn't have a count, set it to empty
+        if not currCount:
+            currCount = empty
+        #if we have a success, increment the succcess counter (0)
+        if status == "A":
+            currCount[status] += 1
+            f[prefix] = currCount
+        #else, we have a failue, increment that counter (1)
+        else:
+            currCount[status] += 1
+            f[prefix] = currCount
+
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
 	count += 1
 
 print count
+
+for key, value in f.iteritems():
+    print "Prefix: " + `key + " Announce: " + str(value["A"]) + " Withdrawl: " + str(value["W"])
