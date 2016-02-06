@@ -20,11 +20,9 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
-
 
 updates = defaultdict(lambda : defaultdict(int))
 ​
