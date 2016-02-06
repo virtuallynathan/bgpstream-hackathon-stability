@@ -59,7 +59,7 @@ while(stream.get_next_record(rec)):
         asPathList = asPath.split(' ')
         print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
         # see what we have for that date already
-        currCount = f.get(prefix)
+        currCount = updates.get(prefix)
         #prepare the empty list for new date values [successCt,failCt]
         empty =  {"A": 0, "W": 0}
         # if the date doesn't have a count, set it to empty
@@ -68,11 +68,11 @@ while(stream.get_next_record(rec)):
         #if we have a success, increment the succcess counter (0)
         if status == "A":
             currCount[status] += 1
-            f[prefix] = currCount
+            updates[prefix] = currCount
         #else, we have a failue, increment that counter (1)
         else:
             currCount[status] += 1
-            f[prefix] = currCount
+            updates[prefix] = currCount
 
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
@@ -80,5 +80,5 @@ while(stream.get_next_record(rec)):
 
 print count
 
-for key, value in f.iteritems():
+for key, value in updates.iteritems():
     print "Prefix: " + key + " Announce: " + str(value["A"]) + " Fail: " + str(value["W"])
