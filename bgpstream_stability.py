@@ -67,11 +67,11 @@ while(stream.get_next_record(rec)):
             currCount = empty
         #if we have a success, increment the succcess counter (0)
         if elem.type == "A":
-            currCount[status] += 1
+            currCount[elem.type] += 1
             updates[prefix] = currCount
         #else, we have a failue, increment that counter (1)
         else:
-            currCount[status] += 1
+            currCount[elem.type] += 1
             updates[prefix] = currCount
 
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
