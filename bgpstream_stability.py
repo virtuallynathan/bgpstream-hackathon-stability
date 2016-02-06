@@ -53,7 +53,7 @@ while(stream.get_next_record(rec)):
         prefix = elem.fields.get("prefix", "")
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
-        print asPath
+        print "Type: " + elem.type + " Prefix " + prefix  "Path: "+ asPath
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
 	count += 1
