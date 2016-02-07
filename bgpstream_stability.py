@@ -82,8 +82,7 @@ def get_ripe_probes(prefix_list):
         bucket_data = prefix_data[2]
         print prefix
 
-        url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" % (
-            ip_proto, prefix)
+        url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" % (ip_proto, prefix)
         probe_data = requests.get(url).json()
 
         probe_count = probe_data["meta"]["total_count"]
@@ -92,12 +91,10 @@ def get_ripe_probes(prefix_list):
         probe_ids = []
         if probe_count > 0:
             for probe in probe_data["objects"]:
-
                 probe_id = probe["id"]
                 probe_ids.append(probe_id)
 
-        return_dict[prefix] = {"count": count, "bucket_data": bucket_data,
-                               "probe_count": probe_count, "probe_ids": probe_ids}
+        return_dict[prefix] = {"count": count, "bucket_data": bucket_data, "probe_count": probe_count, "probe_ids": probe_ids}
 
     jobs = []
     manager = multiprocessing.Manager()
@@ -105,14 +102,11 @@ def get_ripe_probes(prefix_list):
 
     for prefix_data in prefix_list:
         prefix = prefix_data[0]
-
         if "." in prefix:
-            job = multiprocessing.Process(
-                target=get_probe_list, args=("v4", prefix_data, return_dict))
+            job = multiprocessing.Process(target=get_probe_list, args=("v4", prefix_data, return_dict))
 
         elif ":" in prefix:
-            job = multiprocessing.Process(
-                target=get_probe_list, args=("v6", prefix_data, return_dict))
+            job = multiprocessing.Process(target=get_probe_list, args=("v6", prefix_data, return_dict))
 
         jobs.append(job)
         job.start()
