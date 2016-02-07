@@ -45,18 +45,19 @@ from ripe.atlas.cousteau import (
         #add to list
 
 def deal_with_time_bucket_junk(prefix, timestamp):
-    currPrefixData = prefixData.get(prefix)
-    if not currPrefixData:
-                currPrefixData = buckets[:]
+    #currPrefixData = prefixData.get(prefix)
+    #if not currPrefixData:
+    #            currPrefixData = buckets
 
-    #if prefix not in prefixData:
-    #    prefixData["prefix"] = buckets[:]
+    if prefix not in prefixData:
+        prefixData[prefix] = buckets[:]
 
     duration = timestamp - stream_start
     bucket = int(duration / 300)
+
     #pick correct bucket -> then
-    currPrefixData[bucket]["count"] += 1
-    prefixData[prefix] = currPrefixData
+    #currPrefixData[bucket]["count"] += 1
+    prefixData[prefix][bucket]["count"] += 1
 
 def create_time_buckets(start, end):
     time_step = 300 #5 multiprocessing
