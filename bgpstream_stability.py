@@ -23,6 +23,7 @@
 #
 
 import json
+import copy
 import math
 import requests
 import multiprocessing
@@ -45,18 +46,21 @@ from ripe.atlas.cousteau import (
         #add to list
 
 def deal_with_time_bucket_junk(prefix, timestamp):
-    currPrefixData = prefixData.get(prefix)
-    if not currPrefixData:
-                currPrefixData = buckets[:]
+    #currPrefixData = prefixData.get(prefix)
+    #if not currPrefixData:
+    #            currPrefixData = buckets
 
-    #if prefix not in prefixData:
-    #    prefixData["prefix"] = buckets[:]
+    if prefix not in prefixData:
+        newBuckets = copy.deepcopy(buckets)
+        prefixData[prefix] = newBuckets
 
     duration = timestamp - stream_start
     bucket = int(duration / 300)
+    #print prefix, bucket
     #pick correct bucket -> then
-    currPrefixData[bucket]["count"] += 1
-    prefixData[prefix] = currPrefixData
+    #currPrefixData[bucket]["count"] += 1
+    prefixData[prefix][bucket]["count"] += 1
+
 
 def create_time_buckets(start, end):
     time_step = 300 #5 multiprocessing
@@ -184,7 +188,6 @@ while(stream.get_next_record(rec)):
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
         time_stamp = rec.time #unix epoc timestamp 1427846670
-        deal_with_time_bucket_junk(prefix, time_stamp)
         print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
         currCount = updates.get(prefix)
         deal_with_time_bucket_junk(prefix, time_stamp)
