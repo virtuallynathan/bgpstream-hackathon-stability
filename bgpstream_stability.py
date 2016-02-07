@@ -204,7 +204,7 @@ while(stream.get_next_record(rec)):
 
 #probeList = get_ripe_probes(updates)
 #print json.dumps(probeList, indent=4)
-print json.dumps(prefixData, indent=4)
+#print json.dumps(prefixData, indent=4)
 
 topN = 10
 num = 0
@@ -219,8 +219,8 @@ print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
 
 for prefix in prefixData:
-    for bucket in prefix:
-        if bucket["count"] == 0:
-            prefixData[prefix].remove(bucket)
+    for bucket in prefixData[prefix]:
+        if prefixData[prefix][bucket]["count"] == 0:
+            prefixData[prefix][bucket].remove(bucket)
 
 print json.dumps(prefixData, indent=4)
