@@ -26,7 +26,7 @@ import json
 import copy
 import math
 import requests
-import multiprocessing
+#import multiprocessing
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
 #from netaddr import IPNetwork, IPAddress
@@ -88,7 +88,7 @@ def get_ripe_probes(prefix_list):
         return_dict[prefix] = {"count": count, "bucket_data": bucket_data, "probe_count": probe_count, "probe_ids": probe_ids}
 
     jobs = []
-    manager = multiprocessing.Manager()
+    #manager = multiprocessing.Manager()
     #return_dict = manager.dict()
     return_dict = {}
 
@@ -106,7 +106,7 @@ def get_ripe_probes(prefix_list):
 
         #jobs.append(job)
         #job.start()
-        exit()
+
     #for job in jobs:
     #    job.join()
 
