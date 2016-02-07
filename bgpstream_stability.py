@@ -87,6 +87,7 @@ def get_ripe_probes(prefix_list):
         probe_data = requests.get(url).json()
 
         probe_count = probe_data["meta"]["total_count"]
+        print url, probe_count
 
         probe_ids = []
         if probe_count > 0:
