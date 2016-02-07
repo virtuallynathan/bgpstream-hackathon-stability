@@ -257,7 +257,7 @@ for prefix in prefixData:
 
 sortedPrefixList = sorted(PrefixList, key = lambda x: (x[1], x[0]))
 lastNPrefixList = sortedPrefixList[-20:]
-
+print json.dumps(lastNPrefixList, indent=4)
 ripeProbeList = get_ripe_probes(lastNPrefixList)
 
 print json.dumps(ripeProbeList, indent=4)
