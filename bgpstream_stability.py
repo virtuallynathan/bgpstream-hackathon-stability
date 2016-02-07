@@ -250,7 +250,7 @@ for prefix in prefixData:
 
 #print json.dumps(sorted(sortedPrefixList, key = lambda x: (x[1], x[0])), indent=4)
 
-sortedPrefixList = sorted(sortedPrefixList, key = lambda x: (x[1], x[0]))
+sortedPrefixList = sorted(PrefixList, key = lambda x: (x[1], x[0]))
 lastNPrefixList = sortedPrefixList[-20:]
 print json.dumps(lastNPrefixList, indent=4)
 
