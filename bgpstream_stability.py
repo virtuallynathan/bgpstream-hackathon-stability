@@ -47,7 +47,11 @@ from ripe.atlas.cousteau import (
 def deal_with_time_bucket_junk(prefix, timestamp):
     currPrefixData = prefixData.get(prefix)
     if not currPrefixData:
-                currPrefixData = buckets
+                currPrefixData = buckets[:]
+
+    #if prefix not in prefixData:
+    #    prefixData["prefix"] = buckets[:]
+
     duration = timestamp - stream_start
     bucket = int(duration / 300)
     #pick correct bucket -> then
