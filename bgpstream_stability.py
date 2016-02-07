@@ -190,7 +190,7 @@ while(stream.get_next_record(rec)):
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
         time_stamp = rec.time #unix epoc timestamp 1427846670
-        print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
+        #print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
         currCount = updates.get(prefix)
         deal_with_time_bucket_junk(prefix, time_stamp)
         if not currCount:
