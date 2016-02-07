@@ -38,18 +38,7 @@ from ripe.atlas.cousteau import (
     AtlasCreateRequest
 )
 
-# def get_hitlist_ips(prefix_list):
-# for each prefix (dict - prefix:count), check if any IP from the hitlist is in the prefix. Return a dict of prefix:list of stable IPs
-#    for line in hitlist:
-# check if anything from the
-#       if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
-# add to list
-
-
 def deal_with_time_bucket_junk(prefix, timestamp):
-    #currPrefixData = prefixData.get(prefix)
-    # if not currPrefixData:
-    #            currPrefixData = buckets
 
     if prefix not in prefixData:
         newBuckets = copy.deepcopy(buckets)
@@ -57,9 +46,7 @@ def deal_with_time_bucket_junk(prefix, timestamp):
 
     duration = timestamp - stream_start
     bucket = int(duration / 300)
-    # print prefix, bucket
     # pick correct bucket -> then
-    #currPrefixData[bucket]["count"] += 1
     prefixData[prefix][bucket]["count"] += 1
 
 
@@ -175,86 +162,63 @@ buckets = create_time_buckets(stream_start, stream_end)
 # start the stream
 stream.start()
 
-updateCount = 0
-prefixCount = 0
-# print the stream
 while(stream.get_next_record(rec)):
-    # print rec.status, rec.project +"."+ rec.collector, rec.time
+
     elem = rec.get_next_elem()
+
     while(elem):
-        # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type,
-        # elem.fields
+
         communities = elem.fields.get("communities", "")
         nextHop = elem.fields.get("next-hop", "")
         prefix = elem.fields.get("prefix", "")
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
         time_stamp = rec.time  # unix epoc timestamp 1427846670
-        # print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
+
         currCount = updates.get(prefix)
         deal_with_time_bucket_junk(prefix, time_stamp)
+
         if not currCount:
             currCount = 0
+
         currCount += 1
         updates[prefix] = currCount
 
-        # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
-        updateCount += 1
 
-#probeList = get_ripe_probes(updates)
-# print json.dumps(probeList, indent=4)
-# print json.dumps(prefixData, indent=4)
 
-topN = 10
-num = 0
-
-for w in sorted(updates, key=updates.get, reverse=True):
-    num += 1
-    if num == topN:
-        break
-    print w, updates[w]
-
-print "Updates: " + str(updateCount)
-print "Prefixes: " + str(prefixCount)
 
 for prefix in list(prefixData):
-    # print prefix
-    #count = 0
     for bucket in list(prefixData[prefix]):
-        # print bucket
         if bucket["count"] < 3:
             prefixData[prefix].remove(bucket)
-        #count += 1
 
-PrefixList = []
+prefixList = []
 
 for prefix in prefixData:
-    # print prefix
+
     index = 0
     max_index = 0
     max_val = 0
     last_val = 0
+
     for bucket in prefixData[prefix]:
-        # print bucket
-        #count += 1
+
         curr = bucket["count"]
         if curr > last_val:
             max_val = curr
 
         index += 1
         last_val = curr
+
     if prefixData[prefix]:
         PrefixList.append((prefix, max_val, prefixData[prefix][max_index]))
 
-# print json.dumps(sorted(sortedPrefixList, key = lambda x: (x[1], x[0])),
-# indent=4)
 
-sortedPrefixList = sorted(PrefixList, key=lambda x: (x[1], x[0]))
+sortedPrefixList = sorted(prefixList, key=lambda x: (x[1], x[0]))
 lastNPrefixList = sortedPrefixList[-20:]
+
 print json.dumps(lastNPrefixList, indent=4)
-ripeProbeList = get_ripe_probes(lastNPrefixList)
+#ripeProbeList = get_ripe_probes(lastNPrefixList)
 
-print json.dumps(ripeProbeList, indent=4)
-
-# print json.dumps(prefixData, indent=4)
+#print json.dumps(ripeProbeList, indent=4)
