@@ -248,6 +248,6 @@ for prefix in prefixData:
     if prefixData[prefix]:
         blah.append((prefix, max_val, prefixData[prefix][max_index]))
 
-print json.dumps(sorted(blah, key = lambda x: (x[1], x[0]))[-5], indent=4)
+print json.dumps(sorted(blah, key = lambda x: (x[1], x[0])), indent=4)
 
 #print json.dumps(prefixData, indent=4)
