@@ -32,22 +32,23 @@ from collections import defaultdict
 #from netaddr import IPNetwork, IPAddress
 from datetime import datetime
 from ripe.atlas.cousteau import (
-  Ping,
-  Traceroute,
-  AtlasSource,
-  AtlasCreateRequest
+    Ping,
+    Traceroute,
+    AtlasSource,
+    AtlasCreateRequest
 )
 
-#def get_hitlist_ips(prefix_list):
+# def get_hitlist_ips(prefix_list):
 # for each prefix (dict - prefix:count), check if any IP from the hitlist is in the prefix. Return a dict of prefix:list of stable IPs
 #    for line in hitlist:
-        #check if anything from the
+# check if anything from the
 #       if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
-        #add to list
+# add to list
+
 
 def deal_with_time_bucket_junk(prefix, timestamp):
     #currPrefixData = prefixData.get(prefix)
-    #if not currPrefixData:
+    # if not currPrefixData:
     #            currPrefixData = buckets
 
     if prefix not in prefixData:
@@ -56,16 +57,14 @@ def deal_with_time_bucket_junk(prefix, timestamp):
 
     duration = timestamp - stream_start
     bucket = int(duration / 300)
-    #print prefix, bucket
-    #pick correct bucket -> then
+    # print prefix, bucket
+    # pick correct bucket -> then
     #currPrefixData[bucket]["count"] += 1
     prefixData[prefix][bucket]["count"] += 1
 
 
-
-
 def create_time_buckets(start, end):
-    time_step = 300 #5 multiprocessing
+    time_step = 300  # 5 multiprocessing
     buckets = []
     for x in xrange(start, end, time_step):
         new_end = x + 300
@@ -73,54 +72,56 @@ def create_time_buckets(start, end):
         buckets.append(window)
     return buckets
 
+
 def get_ripe_probes(prefix_list):
 
-	def get_probe_list(ip_proto, prefix_data, return_dict):
+    def get_probe_list(ip_proto, prefix_data, return_dict):
 
-		prefix = prefix_data[0]
-		count = prefix_data[1]
-		bucket_data = prefix_data[2]
+        prefix = prefix_data[0]
+        count = prefix_data[1]
+        bucket_data = prefix_data[2]
 
-		url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" %(ip_proto, prefix)
-		probe_data = requests.get(url).json()
+        url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" % (
+            ip_proto, prefix)
+        probe_data = requests.get(url).json()
 
-		probe_count = probe_data["meta"]["total_count"]
+        probe_count = probe_data["meta"]["total_count"]
 
-		probe_ids = []
-		if probe_count > 0:
-			for probe in probe_data["objects"]:
+        probe_ids = []
+        if probe_count > 0:
+            for probe in probe_data["objects"]:
 
-				probe_id = probe["id"]
-				probe_ids.append(probe_id)
+                probe_id = probe["id"]
+                probe_ids.append(probe_id)
 
-		return_dict[prefix] = {"count": count, "bucket_data": bucket_data, "probe_count": probe_count, "probe_ids": probe_ids}
-		return
+        return_dict[prefix] = {"count": count, "bucket_data": bucket_data,
+                               "probe_count": probe_count, "probe_ids": probe_ids}
+        return
 
+    jobs = []
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
 
-	jobs = []
-	manager = multiprocessing.Manager()
-	return_dict = manager.dict()
+    for prefix_data in prefix_list:
+        prefix = prefix_data[0]
 
-	for prefix_data in prefix_list:
-		prefix = prefix_data[0]
+        if "." in prefix:
 
+            job = multiprocessing.Process(
+                target=get_probe_list, args=("v4", prefix_data, return_dict))
 
-		if "." in prefix:
+        elif ":" in prefix:
 
-			job = multiprocessing.Process(target=get_probe_list, args=("v4", prefix_data, return_dict))
+            job = multiprocessing.Process(
+                target=get_probe_list, args=("v6", prefix_data, return_dict))
 
-		elif ":" in prefix:
+        jobs.append(job)
+        job.start()
 
-			job = multiprocessing.Process(target=get_probe_list, args=("v6", prefix_data, return_dict))
+    for job in jobs:
+        job.join()
 
-		jobs.append(job)
-		job.start()
-
-
-	for job in jobs:
-		job.join()
-
-	return dict(return_dict)
+    return dict(return_dict)
 
 
 def create_ripe_measurement(prefix_list):
@@ -185,17 +186,18 @@ updateCount = 0
 prefixCount = 0
 # print the stream
 while(stream.get_next_record(rec)):
-    #print rec.status, rec.project +"."+ rec.collector, rec.time
+    # print rec.status, rec.project +"."+ rec.collector, rec.time
     elem = rec.get_next_elem()
     while(elem):
-        # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type, elem.fields
+        # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type,
+        # elem.fields
         communities = elem.fields.get("communities", "")
         nextHop = elem.fields.get("next-hop", "")
         prefix = elem.fields.get("prefix", "")
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
-        time_stamp = rec.time #unix epoc timestamp 1427846670
-        #print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
+        time_stamp = rec.time  # unix epoc timestamp 1427846670
+        # print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
         currCount = updates.get(prefix)
         deal_with_time_bucket_junk(prefix, time_stamp)
         if not currCount:
@@ -205,29 +207,29 @@ while(stream.get_next_record(rec)):
 
         # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
         elem = rec.get_next_elem()
-	updateCount += 1
+        updateCount += 1
 
 #probeList = get_ripe_probes(updates)
-#print json.dumps(probeList, indent=4)
-#print json.dumps(prefixData, indent=4)
+# print json.dumps(probeList, indent=4)
+# print json.dumps(prefixData, indent=4)
 
 topN = 10
 num = 0
 
 for w in sorted(updates, key=updates.get, reverse=True):
-  num += 1
-  if num == topN:
-      break
-  print w, updates[w]
+    num += 1
+    if num == topN:
+        break
+    print w, updates[w]
 
 print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
 
 for prefix in list(prefixData):
-    #print prefix
+    # print prefix
     #count = 0
     for bucket in list(prefixData[prefix]):
-        #print bucket
+        # print bucket
         if bucket["count"] < 3:
             prefixData[prefix].remove(bucket)
         #count += 1
@@ -235,31 +237,31 @@ for prefix in list(prefixData):
 PrefixList = []
 
 for prefix in prefixData:
-    #print prefix
+    # print prefix
     index = 0
     max_index = 0
     max_val = 0
     last_val = 0
     for bucket in prefixData[prefix]:
-        #print bucket
+        # print bucket
         #count += 1
         curr = bucket["count"]
         if curr > last_val:
             max_val = curr
-
 
         index += 1
         last_val = curr
     if prefixData[prefix]:
         PrefixList.append((prefix, max_val, prefixData[prefix][max_index]))
 
-#print json.dumps(sorted(sortedPrefixList, key = lambda x: (x[1], x[0])), indent=4)
+# print json.dumps(sorted(sortedPrefixList, key = lambda x: (x[1], x[0])),
+# indent=4)
 
-sortedPrefixList = sorted(PrefixList, key = lambda x: (x[1], x[0]))
+sortedPrefixList = sorted(PrefixList, key=lambda x: (x[1], x[0]))
 lastNPrefixList = sortedPrefixList[-20:]
 print json.dumps(lastNPrefixList, indent=4)
 ripeProbeList = get_ripe_probes(lastNPrefixList)
 
 print json.dumps(ripeProbeList, indent=4)
 
-#print json.dumps(prefixData, indent=4)
+# print json.dumps(prefixData, indent=4)
