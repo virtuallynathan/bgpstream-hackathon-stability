@@ -241,12 +241,12 @@ for prefix in prefixData:
         curr = bucket["count"]
         if curr > last_val:
             max_val = curr
-            max_index = index
+
 
         index += 1
         last_val = curr
 
-    blah.append((prefix, max_val, prefixData[prefix][max_index]))
+    blah.append((prefix, max_val))
 
 print json.dumps(sorted(blah, key = lambda x: (x[1], x[0])), indent=4)
 
