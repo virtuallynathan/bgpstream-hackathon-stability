@@ -245,8 +245,9 @@ for prefix in prefixData:
 
         index += 1
         last_val = curr
-
-    blah.append((prefix, max_val))
+    if len(prefixData[prefix]) == 0:
+        continue
+    blah.append((prefix, max_val, prefixData[prefix][index]))
 
 print json.dumps(sorted(blah, key = lambda x: (x[1], x[0])), indent=4)
 
