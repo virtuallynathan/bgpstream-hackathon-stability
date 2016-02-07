@@ -218,7 +218,7 @@ for w in sorted(updates, key=updates.get, reverse=True):
 print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
 
-for prefix in prefixData:
+for prefix in list(prefixData):
     #print prefix
     #count = 0
     for bucket in prefixData[prefix]:
