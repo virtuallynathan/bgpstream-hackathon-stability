@@ -212,7 +212,7 @@ for prefix in prefixData:
         last_val = curr
 
     if prefixData[prefix]:
-        PrefixList.append((prefix, max_val, prefixData[prefix][max_index]))
+        prefixList.append((prefix, max_val, prefixData[prefix][max_index]))
 
 
 sortedPrefixList = sorted(prefixList, key=lambda x: (x[1], x[0]))
