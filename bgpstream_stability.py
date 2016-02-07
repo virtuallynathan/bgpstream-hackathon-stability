@@ -223,7 +223,7 @@ for prefix in list(prefixData):
     #count = 0
     for bucket in list(prefixData[prefix]):
         #print bucket
-        if bucket["count"] == 0:
+        if bucket["count"] < 3:
             prefixData[prefix].remove(bucket)
         #count += 1
 
