@@ -23,6 +23,7 @@
 #
 
 import json
+import math
 import requests
 import multiprocessing
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
@@ -37,6 +38,7 @@ from ripe.atlas.cousteau import (
 )
 
 updates = defaultdict(int)
+prefixData = {}
 # create a new bgpstream instance
 stream = BGPStream()
 
@@ -47,9 +49,12 @@ rec = BGPRecord()
 stream.add_filter('collector', 'rrc06')
 stream.add_filter('record-type', 'updates')
 
+stream_start = 1454284800
+stream_end = 1454285700
 # select the time interval to process:
 # Wed Apr 1 00:02:50 UTC 2015 -> Wed Apr 1 00:04:30
-stream.add_interval_filter(1454284800,1454285700)
+stream.add_interval_filter(stream_start, stream_end)
+buckets = create_time_buckets(stream_start, stream_end)
 
 # start the stream
 stream.start()
@@ -67,14 +72,13 @@ while(stream.get_next_record(rec)):
         prefix = elem.fields.get("prefix", "")
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
+        time_stamp = rec.time #unix epoc timestamp 1427846670
+        deal_with_time_bucket_junk(prefix, time_stamp)
         print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
-        # see what we have for that date already
         currCount = updates.get(prefix)
-        #prepare the empty list for new date values [successCt,failCt]
 
         if not currCount:
             currCount = 0
-        #if we have a success, increment the succcess counter (0)
         currCount += 1
         updates[prefix] = currCount
 
@@ -106,6 +110,28 @@ def get_hitlist_ips(prefix_list):
         #check if anything from the
         if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
             #add to list
+
+def deal_with_time_bucket_junk(prefix, timestamp):
+    currPrefixData = prefixData.get(prefix)
+    if not currPrefixData:
+                currPrefixData = buckets
+    duration = timestamp - stream_start
+    bucket = int(duration / 300)
+    #pick correct bucket -> then
+    currPrefixData[bucket]["count"] += 1
+    prefixData[prefix] = currPrefixData
+
+
+
+def create_time_buckets(start, end):
+    time_step = 300 #5 multiprocessing
+    buckets = []
+    for x in xrange(start, end, time_step):
+        new_end = x + 300
+        window = {"start": x, "end": new_end, "count": 0}
+        buckets.append(window)
+    return buckets
+
 
 
 def get_ripe_probes(prefix_list):
