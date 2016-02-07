@@ -193,8 +193,8 @@ while(stream.get_next_record(rec)):
         elem = rec.get_next_elem()
 	updateCount += 1
 
-probeList = get_ripe_probes(updates)
-print json.dumps(probeList, indent=4)
+#probeList = get_ripe_probes(updates)
+#print json.dumps(probeList, indent=4)
 print json.dumps(prefixData, indent=4)
 
 topN = 10
