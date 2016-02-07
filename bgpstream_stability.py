@@ -227,7 +227,7 @@ for prefix in list(prefixData):
             prefixData[prefix].remove(bucket)
         #count += 1
 
-blah = []
+PrefixList = []
 
 for prefix in prefixData:
     #print prefix
@@ -246,8 +246,12 @@ for prefix in prefixData:
         index += 1
         last_val = curr
     if prefixData[prefix]:
-        blah.append((prefix, max_val, prefixData[prefix][max_index]))
+        sortedPrefixList.append((prefix, max_val, prefixData[prefix][max_index]))
 
-print json.dumps(sorted(blah, key = lambda x: (x[1], x[0])), indent=4)
+#print json.dumps(sorted(sortedPrefixList, key = lambda x: (x[1], x[0])), indent=4)
+
+sortedPrefixList = sorted(sortedPrefixList, key = lambda x: (x[1], x[0]))
+lastNPrefixList = sortedPrefixList[-20:]
+print json.dumps(lastNPrefixList, indent=4)
 
 #print json.dumps(prefixData, indent=4)
