@@ -220,7 +220,8 @@ print "Prefixes: " + str(prefixCount)
 
 for prefix in prefixData:
     print prefix
-    #for bucket in prefixData[prefix]:
+    for bucket in prefixData[prefix]:
+        print bucket
     #    if prefixData[prefix][bucket]["count"] == 0:
     #        prefixData[prefix][bucket].remove(bucket)
 
