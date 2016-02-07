@@ -50,7 +50,8 @@ def deal_with_time_bucket_junk(prefix, timestamp):
     #            currPrefixData = buckets
 
     if prefix not in prefixData:
-        prefixData[prefix] = buckets[:]
+        newBuckets = list(buckets)
+        prefixData[prefix] = newBuckets
 
     duration = timestamp - stream_start
     bucket = int(duration / 300)
@@ -185,7 +186,6 @@ while(stream.get_next_record(rec)):
         asPath = elem.fields.get("as-path", "")
         asPathList = asPath.split(' ')
         time_stamp = rec.time #unix epoc timestamp 1427846670
-        deal_with_time_bucket_junk(prefix, time_stamp)
         print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
         currCount = updates.get(prefix)
         deal_with_time_bucket_junk(prefix, time_stamp)
