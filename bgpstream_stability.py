@@ -70,9 +70,12 @@ def get_ripe_probes(prefix_list):
         print prefix
 
         url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" % (ip_proto, prefix)
+        print "ajm - 1"
         probe_data = requests.get(url).json()
+        print "ajm - 2"
 
         probe_count = probe_data["meta"]["total_count"]
+        print "ajm - 3"
         print url, probe_count
 
         probe_ids = []
