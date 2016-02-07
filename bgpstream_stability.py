@@ -229,13 +229,13 @@ for prefix in list(prefixData):
 
 blah = []
 
-for prefix in list(prefixData):
+for prefix in prefixData:
     #print prefix
     index = 0
     max_index = 0
     max_val = 0
     last_val = 0
-    for bucket in list(prefixData[prefix]):
+    for bucket in prefixData[prefix]:
         #print bucket
         #count += 1
         curr = bucket["count"]
@@ -244,9 +244,8 @@ for prefix in list(prefixData):
             max_index = index
 
         index += 1
-
-
         last_val = curr
+
     blah.append((prefix, max_val, prefixData[prefix][max_index]))
 
 print json.dumps(sorted(blah, key = lambda x: (x[1], x[0])), indent=4)
