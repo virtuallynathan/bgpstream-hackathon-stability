@@ -246,7 +246,7 @@ for prefix in prefixData:
         index += 1
         last_val = curr
     if prefixData[prefix]:
-        sortedPrefixList.append((prefix, max_val, prefixData[prefix][max_index]))
+        PrefixList.append((prefix, max_val, prefixData[prefix][max_index]))
 
 #print json.dumps(sorted(sortedPrefixList, key = lambda x: (x[1], x[0])), indent=4)
 
