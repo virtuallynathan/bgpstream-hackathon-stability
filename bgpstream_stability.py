@@ -98,7 +98,6 @@ def get_ripe_probes(prefix_list):
 
         return_dict[prefix] = {"count": count, "bucket_data": bucket_data,
                                "probe_count": probe_count, "probe_ids": probe_ids}
-        return
 
     jobs = []
     manager = multiprocessing.Manager()
