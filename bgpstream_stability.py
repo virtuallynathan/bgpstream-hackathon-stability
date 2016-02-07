@@ -22,6 +22,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import pdb
 import json
 import copy
 import math
@@ -71,6 +72,7 @@ def get_ripe_probes(prefix_list):
 
         url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" % (ip_proto, prefix)
         print url
+        pdb.set_trace()
         print "ajm - 1"
         probe_data = requests.get(url)
         print "ajm - 2"
