@@ -89,21 +89,26 @@ def get_ripe_probes(prefix_list):
 
     jobs = []
     manager = multiprocessing.Manager()
-    return_dict = manager.dict()
+    #return_dict = manager.dict()
+    return_dict = {}
 
     for prefix_data in prefix_list:
         prefix = prefix_data[0]
+
         if "." in prefix:
-            job = multiprocessing.Process(target=get_probe_list, args=("v4", prefix_data, return_dict))
+            get_probe_list("v4", prefix_data, return_dict)
+        #    job = multiprocessing.Process(target=get_probe_list, args=("v4", prefix_data, return_dict))
 
         elif ":" in prefix:
-            job = multiprocessing.Process(target=get_probe_list, args=("v6", prefix_data, return_dict))
+            get_probe_list("v6", prefix_data, return_dict)
 
-        jobs.append(job)
-        job.start()
+        #    job = multiprocessing.Process(target=get_probe_list, args=("v6", prefix_data, return_dict))
 
-    for job in jobs:
-        job.join()
+        #jobs.append(job)
+        #job.start()
+        exit()
+    #for job in jobs:
+    #    job.join()
 
     return dict(return_dict)
 
