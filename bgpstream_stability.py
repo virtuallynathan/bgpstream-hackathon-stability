@@ -81,6 +81,8 @@ def get_ripe_probes(prefix_list):
 		count = prefix_data[1]
 		bucket_data = prefix_data[2]
 
+        print prefix, count, bucket_data
+
 		url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" %(ip_proto, prefix)
 		probe_data = requests.get(url).json()
 
