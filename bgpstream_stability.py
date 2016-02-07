@@ -37,73 +37,6 @@ from ripe.atlas.cousteau import (
   AtlasCreateRequest
 )
 
-updates = defaultdict(int)
-prefixData = {}
-# create a new bgpstream instance
-stream = BGPStream()
-
-# create a reusable bgprecord instance
-rec = BGPRecord()
-
-# configure the stream to retrieve Updates records from the RRC06 collector
-stream.add_filter('collector', 'rrc06')
-stream.add_filter('record-type', 'updates')
-
-stream_start = 1454284800
-stream_end = 1454285700
-# select the time interval to process:
-# Wed Apr 1 00:02:50 UTC 2015 -> Wed Apr 1 00:04:30
-stream.add_interval_filter(stream_start, stream_end)
-buckets = create_time_buckets(stream_start, stream_end)
-
-# start the stream
-stream.start()
-
-updateCount = 0
-prefixCount = 0
-# print the stream
-while(stream.get_next_record(rec)):
-    #print rec.status, rec.project +"."+ rec.collector, rec.time
-    elem = rec.get_next_elem()
-    while(elem):
-        # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type, elem.fields
-        communities = elem.fields.get("communities", "")
-        nextHop = elem.fields.get("next-hop", "")
-        prefix = elem.fields.get("prefix", "")
-        asPath = elem.fields.get("as-path", "")
-        asPathList = asPath.split(' ')
-        time_stamp = rec.time #unix epoc timestamp 1427846670
-        deal_with_time_bucket_junk(prefix, time_stamp)
-        print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
-        currCount = updates.get(prefix)
-
-        if not currCount:
-            currCount = 0
-        currCount += 1
-        updates[prefix] = currCount
-
-        # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
-        elem = rec.get_next_elem()
-	updateCount += 1
-
-probeList = get_ripe_probes(updates)
-print json.dumps(probeList, indent=4)
-
-topN = 10
-num = 0
-
-for w in sorted(updates, key=updates.get, reverse=True):
-  num += 1
-  if num == topN:
-      break
-  print w, updates[w]
-
-print "Updates: " + str(updateCount)
-print "Prefixes: " + str(prefixCount)
-
-# Helper functions
-with open('hitlist.txt') as f:
-    hitlist = f.readlines()
 def get_hitlist_ips(prefix_list):
 # for each prefix (dict - prefix:count), check if any IP from the hitlist is in the prefix. Return a dict of prefix:list of stable IPs
     for line in hitlist:
@@ -213,3 +146,73 @@ def create_ripe_measurement(prefix_list):
             measurement_count += 1
             if measurement_count > measurement_limit:
                 break
+
+
+updates = defaultdict(int)
+prefixData = {}
+# create a new bgpstream instance
+stream = BGPStream()
+
+# create a reusable bgprecord instance
+rec = BGPRecord()
+
+# configure the stream to retrieve Updates records from the RRC06 collector
+stream.add_filter('collector', 'rrc06')
+stream.add_filter('record-type', 'updates')
+
+stream_start = 1454284800
+stream_end = 1454285700
+# select the time interval to process:
+# Wed Apr 1 00:02:50 UTC 2015 -> Wed Apr 1 00:04:30
+stream.add_interval_filter(stream_start, stream_end)
+buckets = create_time_buckets(stream_start, stream_end)
+
+# start the stream
+stream.start()
+
+updateCount = 0
+prefixCount = 0
+# print the stream
+while(stream.get_next_record(rec)):
+    #print rec.status, rec.project +"."+ rec.collector, rec.time
+    elem = rec.get_next_elem()
+    while(elem):
+        # print "\t", elem.type, elem.peer_address, elem.peer_asn, elem.type, elem.fields
+        communities = elem.fields.get("communities", "")
+        nextHop = elem.fields.get("next-hop", "")
+        prefix = elem.fields.get("prefix", "")
+        asPath = elem.fields.get("as-path", "")
+        asPathList = asPath.split(' ')
+        time_stamp = rec.time #unix epoc timestamp 1427846670
+        deal_with_time_bucket_junk(prefix, time_stamp)
+        print "Type: " + elem.type + " Prefix " + prefix + " Path: " + asPath
+        currCount = updates.get(prefix)
+        deal_with_time_bucket_junk(prefix, time_stamp)
+        if not currCount:
+            currCount = 0
+        currCount += 1
+        updates[prefix] = currCount
+
+        # elem.fields = {'communities': [], 'next-hop': '202.249.2.185', 'prefix': '200.0.251.0/24', 'as-path': '25152 6939 12956 10834'}
+        elem = rec.get_next_elem()
+	updateCount += 1
+
+probeList = get_ripe_probes(updates)
+print json.dumps(probeList, indent=4)
+print json.dumps(prefixData, indent=4)
+
+topN = 10
+num = 0
+
+for w in sorted(updates, key=updates.get, reverse=True):
+  num += 1
+  if num == topN:
+      break
+  print w, updates[w]
+
+print "Updates: " + str(updateCount)
+print "Prefixes: " + str(prefixCount)
+
+# Helper functions
+with open('hitlist.txt') as f:
+    hitlist = f.readlines()
