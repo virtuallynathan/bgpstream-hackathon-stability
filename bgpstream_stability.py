@@ -62,6 +62,8 @@ def deal_with_time_bucket_junk(prefix, timestamp):
     prefixData[prefix][bucket]["count"] += 1
 
 
+
+
 def create_time_buckets(start, end):
     time_step = 300 #5 multiprocessing
     buckets = []
@@ -216,6 +218,9 @@ for w in sorted(updates, key=updates.get, reverse=True):
 print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
 
-# Helper functions
-with open('hitlist.txt') as f:
-    hitlist = f.readlines()
+for prefix in prefixData:
+    for bucket in prefix:
+        if bucket["count"] == 0:
+            prefixData[prefix].remove(bucket)
+
+print json.dumps(prefixData, indent=4)
