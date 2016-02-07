@@ -23,6 +23,7 @@
 #
 
 import json
+import copy
 import math
 import requests
 import multiprocessing
@@ -50,15 +51,15 @@ def deal_with_time_bucket_junk(prefix, timestamp):
     #            currPrefixData = buckets
 
     if prefix not in prefixData:
-        newBuckets = list(buckets)
+        newBuckets = copy.deepcopy(buckets)
         prefixData[prefix] = newBuckets
 
     duration = timestamp - stream_start
     bucket = int(duration / 300)
-
+    #print prefix, bucket
     #pick correct bucket -> then
     #currPrefixData[bucket]["count"] += 1
-    #prefixData[prefix][bucket]["count"] += 1
+    prefixData[prefix][bucket]["count"] += 1
 
 
 def create_time_buckets(start, end):
