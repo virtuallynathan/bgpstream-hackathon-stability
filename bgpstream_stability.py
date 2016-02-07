@@ -80,6 +80,7 @@ def get_ripe_probes(prefix_list):
         prefix = prefix_data[0]
         count = prefix_data[1]
         bucket_data = prefix_data[2]
+        print prefix
 
         url = "https://atlas.ripe.net/api/v1/probe/?format=json&prefix_%s=%s" % (
             ip_proto, prefix)
@@ -106,12 +107,10 @@ def get_ripe_probes(prefix_list):
         prefix = prefix_data[0]
 
         if "." in prefix:
-
             job = multiprocessing.Process(
                 target=get_probe_list, args=("v4", prefix_data, return_dict))
 
         elif ":" in prefix:
-
             job = multiprocessing.Process(
                 target=get_probe_list, args=("v6", prefix_data, return_dict))
 
