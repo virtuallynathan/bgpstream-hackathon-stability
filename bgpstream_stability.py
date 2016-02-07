@@ -28,7 +28,7 @@ import requests
 import multiprocessing
 from _pybgpstream import BGPStream, BGPRecord, BGPElem
 from collections import defaultdict
-from netaddr import IPNetwork, IPAddress
+#from netaddr import IPNetwork, IPAddress
 from datetime import datetime
 from ripe.atlas.cousteau import (
   Ping,
@@ -37,12 +37,12 @@ from ripe.atlas.cousteau import (
   AtlasCreateRequest
 )
 
-def get_hitlist_ips(prefix_list):
+#def get_hitlist_ips(prefix_list):
 # for each prefix (dict - prefix:count), check if any IP from the hitlist is in the prefix. Return a dict of prefix:list of stable IPs
-    for line in hitlist:
+#    for line in hitlist:
         #check if anything from the
-        if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
-            #add to list
+#       if IPAddress("192.168.0.1") in IPNetwork("192.168.0.0/24"):
+        #add to list
 
 def deal_with_time_bucket_junk(prefix, timestamp):
     currPrefixData = prefixData.get(prefix)
@@ -54,8 +54,6 @@ def deal_with_time_bucket_junk(prefix, timestamp):
     currPrefixData[bucket]["count"] += 1
     prefixData[prefix] = currPrefixData
 
-
-
 def create_time_buckets(start, end):
     time_step = 300 #5 multiprocessing
     buckets = []
@@ -64,8 +62,6 @@ def create_time_buckets(start, end):
         window = {"start": x, "end": new_end, "count": 0}
         buckets.append(window)
     return buckets
-
-
 
 def get_ripe_probes(prefix_list):
 
