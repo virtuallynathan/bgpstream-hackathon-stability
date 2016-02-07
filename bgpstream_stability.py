@@ -58,7 +58,8 @@ def deal_with_time_bucket_junk(prefix, timestamp):
 
     #pick correct bucket -> then
     #currPrefixData[bucket]["count"] += 1
-    prefixData[prefix][bucket]["count"] += 1
+    #prefixData[prefix][bucket]["count"] += 1
+
 
 def create_time_buckets(start, end):
     time_step = 300 #5 multiprocessing
