@@ -224,4 +224,4 @@ for prefix in prefixData:
     #    if prefixData[prefix][bucket]["count"] == 0:
     #        prefixData[prefix][bucket].remove(bucket)
 
-print json.dumps(prefixData, indent=4)
+#print json.dumps(prefixData, indent=4)
