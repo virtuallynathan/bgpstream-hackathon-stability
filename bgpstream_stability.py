@@ -219,10 +219,10 @@ print "Updates: " + str(updateCount)
 print "Prefixes: " + str(prefixCount)
 
 for prefix in prefixData:
-    print prefix
+    #print prefix
     for bucket in prefixData[prefix]:
-        print bucket
-    #    if prefixData[prefix][bucket]["count"] == 0:
-    #        prefixData[prefix][bucket].remove(bucket)
+        #print bucket
+        if bucket["count"] == 0:
+            prefixData[prefix][bucket].remove(bucket)
 
-#print json.dumps(prefixData, indent=4)
+print json.dumps(prefixData, indent=4)
