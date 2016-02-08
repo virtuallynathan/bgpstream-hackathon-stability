@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
     	results.append({"prefix":prefix, "count":count, "start_time":start_time, "end_time":end_time, "probe":probe, "packet_loss":packet_loss})
     
-    
+    sorted_results = list(sorted(results, reverse=True, key = lambda x: (x["count"], x["packet_loss"])))
     out_file = open(out_file_name, "w")
-    out_file.write(json.dumps(results, indent=3))
+    out_file.write(json.dumps(sorted_results, indent=3))
     out_file.close()
